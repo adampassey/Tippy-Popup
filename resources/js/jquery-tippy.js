@@ -79,11 +79,12 @@
 				if( options.hideEvent == 'clickOff' ) {
 					//	if they click off of the window,
 					//	hide the popup
-					jQuery('html').bind('click',function() {
+					jQuery('html').bind('mouseup',function() {
 					  jQuery.fn.tippy.hide();
 					});
 				} else {
-					jQuery('html').unbind('click');
+					jQuery('html').unbind();
+					obj.unbind( options.hideEvent );
 					obj.bind( options.hideEvent, function(e) {
 						jQuery.fn.tippy.hide();
 					});	
@@ -172,16 +173,20 @@
 jQuery.fn.tippy.hide = function() {
 	jQuery('#tippyPopup').stop().animate({
 	 	opacity: 0
-	 }, 200);
-	 jQuery('#tippyPopup').css({
-	 	top: '-100px',
-	 	left: '-100px'
+	 }, 100, function() {
+	 	jQuery('#tippyPopup').css({
+	 		top: '-100px',
+	 		left: '-100px'
+	 	});
 	 });
 };
 
 jQuery(document).ready(function() {
 
 	jQuery("body").append('<div id="tippyPopup" class="default"><div class="msg"><span></span></div></div>');
+	jQuery('#tippyPopup').bind('click',function(e) {
+		e.stopPropagation();
+	});
 	
 	jQuery("a").each(function() {
 		if( jQuery(this).attr("rel") == 'tippy' ) {
